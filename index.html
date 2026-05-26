@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Anime Style QR Code Generator</title>
+    
+    <!-- CSS Stylings -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* 3D Background Container */
+        #vanta-canvas {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        /* Main UI Wrapper */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Anime-Cyberpunk Inspired Glassmorphism Card */
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            width: 380px;
+            text-align: center;
+            color: #fff;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px #ff007f, 0 0 20px #ff007f;
+            color: #fff;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(255, 0, 127, 0.5);
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #ff007f;
+            box-shadow: 0 0 15px rgba(255, 0, 127, 0.8);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, #ff007f, #7928ca);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s ease;
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(255, 0, 127, 0.4);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 0, 127, 0.8);
+        }
+
+        /* QR Code Output Area */
+        #qrcode {
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 12px;
+            display: none; /* Initially hidden */
+            animation: scaleUp 0.4s ease-in-out;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        #qrcode img {
+            width: 180px;
+            height: 180px;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes scaleUp {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 3D Background Element -->
+    <div id="vanta-canvas"></div>
+
+    <!-- QR Code Generator Card -->
+    <div class="container">
+        <h2>QR Generator</h2>
+        <input type="text" id="qr-text" placeholder="Enter link or text here...">
+        <button onclick="generateQR()">Generate QR Code</button>
+        
+        <!-- Target for QR Code -->
+        <div id="qrcode"></div>
+    </div>
+
+    <!-- External Libraries Needed for 3D Background and QR Code -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <script>
+        // 1. Initialize 3D Background Animation (Anime/Cyberpunk style Network Effect)
+        VANTA.NET({
+            el: "#vanta-canvas",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0xff007f,      /* Neon Pink */
+            backgroundColor: 0x0d0d1a, /* Dark Anime/Cyberpunk Void */
+            points: 12.00,
+            maxDistance: 22.00,
+            spacing: 16.00
+        });
+
+        // 2. QR Code Generation Logic
+        function generateQR() {
+            var qrText = document.getElementById("qr-text").value;
+            var qrContainer = document.getElementById("qrcode");
+
+            // Clear previous QR code if any
+            qrContainer.innerHTML = "";
+
+            if (qrText.trim() !== "") {
+                // Generate new QR code
+                new QRCode(qrContainer, {
+                    text: qrText,
+                    width: 180,
+                    height: 180,
+                    colorDark : "#000000",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.H
+                });
+                
+                // Show the hidden container
+                qrContainer.style.display = "flex";
+            } else {
+                alert("Please enter some text or a URL first!");
+                qrContainer.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
